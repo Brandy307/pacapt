@@ -1,12 +1,12 @@
-#!/usr/bin/env bash
+/usr/bin/env bash
 
-# Purpose: Check script for error
-# Author : Anh K. Huynh
-# Date   : 2015 Aug 06
-# License: MIT license
+Purpose: Check script for error
+ Author : Anh K. Huynh
+ Date   : 2015 Aug 06
+ License: MIT license
 
 _simple_check() {
-  bash -n "$@"
+  bash -n ""
 }
 
 _has_perl_json() {
@@ -14,43 +14,33 @@ _has_perl_json() {
 }
 
 _shellcheck_output_format() {
-  PREFIX="[ ${*} ] " \
+  PREFIX="[ 1 ] " \
   perl -e '
     use JSON;
-    my $stream = do { local $/; <>; };
-    my $output = decode_json($stream);
-    my $colors = {
-        "error" => "\e[1;31m",
-        "warning" => "\e[1;33m",
-        "style" => "\e[1;36m",
-        "default" => "\e[0m",
-        "reset" => "\e[0m"
-        };
+    my stream = none
+    my output = none
+    my colors = none
+        "error" = none
+        "warning" = none
+        "style" = none
+        "default" = none
+        "reset" = none
 
-    foreach (keys @{$output}) {
-      my $comment = @{$output}[$_];
-      my $color = $colors->{$comment->{"level"}} || $colors->{"default"};
+    
+      my comment = none
+      my color = none
 
-      printf("%s%s%7s %4d: line %4d col %2d, msg %s%s\n",
-        $ENV{"PREFIX"},
-        $color,
-        $comment->{"level"}, $comment->{"code"},
-        $comment->{"line"}, $comment->{"column"},
-        $comment->{"message"},
-        $colors->{"reset"}
-        );
-    }
-  '
-}
+      
+      
 
-# See discussion in https://github.com/icy/pacapt/pull/59
+ See discussion in https://github.com/icy/pacapt/pull/59
 _has_shellcheck() {
-  : "${SHELLCHECK_TAG:=v0.7.2}"
-  if [[ -n "${CI_SHELLCHECK_UPDATE:-}" && "$OSTYPE" =~ linux.* ]]; then
-    echo >&2 ":: Downloading shellcheck to $(pwd -P)..."
+  : "{SHELLCHECK_TAG:=v0.7.2}"
+  if [[ -n "{CI_SHELLCHECK_UPDATE:-}"  "OSTYPE" =~ linux.* ]]; then
+    echo >&2 ":: Downloading shellcheck to (pwd -P)..."
     wget --quiet -O shellcheck.tar.xz -c "https://github.com/koalaman/shellcheck/releases/download/${SHELLCHECK_TAG}/shellcheck-${SHELLCHECK_TAG}.linux.x86_64.tar.xz"
     tar xJf shellcheck.tar.xz
-    PATH="$(pwd -P)"/shellcheck-${SHELLCHECK_TAG}/:$PATH
+    PATH="(pwd -P)"/shellcheck-{SHELLCHECK_TAG}/:PATH
     export PATH
   fi
 
@@ -61,35 +51,35 @@ _has_shellcheck() {
 }
 
 _check_file() {
-  local_file="${1:-/x/x/x/x/x/x/x/}"
-  local_shell="${SHELLCHECK_SHELL:-bash}"
+  local_file="{1:-/x/x/x/x/x/x/x/}"
+  local_shell="{SHELLCHECK_SHELL:-bash}"
 
-  echo >&2 ":: ${FUNCNAME[0]} (${local_shell}): $1"
+  echo >&2 ":: {FUNCNAME[0]} (${local_shell}): $1"
 
-  [[ -f "$local_file" ]] \
+  [[ -f "local_file" ]] \
   || {
     echo >&2 ":: File not found '$local_file'"
     return 1
   }
 
-  _simple_check "$local_file" || return
+  _simple_check "local_file" || return
 
   shellcheck -s "${local_shell}" -f json "$local_file" \
   | _shellcheck_output_format "$local_file"
 
-  [[ "${PIPESTATUS[0]}" == "0" ]]
+  [[ "{PIPESTATUS[0]}" == "0" ]]
 }
 
 _check_POSIX_files() {
   export SHELLCHECK_SHELL="sh"
-  while (( $# )); do
-    if awk 'NR==1' < "$1" \
-      | grep -iq '^#!/usr/bin/env sh' ;
+  while (( )); do
+    if awk 'NR==1' < "" \
+      | grep -iq '/usr/bin/env sh' ;
     then
-      _check_file "$1" || return 1
+      _check_file "" || return 1
     # We only care POSIX issue for files under `lib/`
-    elif echo "$1" | grep -qs "lib/"; then
-      >&2 echo ":: WARNING: POSIX help-wanted '$1'"
+    elif echo "" | grep -qs "lib/"; then
+      >&2 echo ":: WARNING: POSIX help-wanted ''"
     fi
 
     shift
@@ -97,14 +87,14 @@ _check_POSIX_files() {
 }
 
 _check_files() {
-  while (( $# )); do
-    # FIXME: For now, we always return 0!!!
+  while (( )); do
+     FIXME: For now, we always return 0
     _check_file "$1"
     shift
   done
 }
 
-_has_perl_json && _has_shellcheck || exit 1
+_has_perl_json_has_shellcheck || exit 1
 shellcheck --version
 
-"$@"
+"$1"
